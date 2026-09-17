@@ -1,31 +1,376 @@
-<!doctype html>
-<html lang="en"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0A66C2"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="apple-mobile-web-app-title" content="Constryn"><meta name="mobile-web-app-capable" content="yes"><meta name="format-detection" content="telephone=no"><title>Constryn</title>
-<style>
-*{box-sizing:border-box}body{margin:0;background:#F3F2EF;color:#1D2226;font-family:Arial,system-ui,sans-serif;padding-bottom:76px}button,input,textarea,select{font:inherit}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}body{-webkit-tap-highlight-color:transparent;overscroll-behavior-y:none}button,input,textarea,select{touch-action:manipulation}header{height:58px;background:#fff;display:flex;align-items:center;gap:12px;padding:8px max(14px,env(safe-area-inset-left));position:sticky;top:0;z-index:5;border-bottom:1px solid #ddd}.logo{font-weight:900;font-size:25px;color:#0A66C2}.search{flex:1;background:#EEF3F8;border:0;border-radius:8px;padding:11px}
-.wrap{max-width:680px;margin:auto;padding:12px}.card{background:#fff;border:1px solid #E0DFDC;border-radius:10px;margin-bottom:12px;padding:14px}.create{display:flex;gap:10px;align-items:center}.avatar{width:42px;height:42px;border-radius:50%;background:#DCE6F1;display:grid;place-items:center;font-weight:bold;color:#0A66C2}.create input{flex:1;border:1px solid #ddd;border-radius:24px;padding:12px;background:#f8f8f8;text-align:left}.quick{display:flex;justify-content:space-around;margin-top:12px;border-top:1px solid #eee;padding-top:10px}.quick button{border:0;background:none;font-weight:bold;color:#5E6B75}.posthead{display:flex;gap:10px}.posthead h3{margin:2px 0}.muted{color:#667085;font-size:13px}.post p{line-height:1.45}.media{width:100%;max-height:500px;object-fit:cover;margin:8px 0;border-radius:7px;background:#ddd}.actions{display:flex;justify-content:space-around;border-top:1px solid #eee;padding-top:10px}.actions button{border:0;background:none;color:#5E6B75;padding:8px}.market{display:flex;gap:10px;overflow:auto}.item{min-width:165px;border:1px solid #ddd;border-radius:8px;overflow:hidden}.item img{width:100%;height:105px;object-fit:cover}.item div{padding:8px;font-size:13px}.price{font-weight:bold;color:#1D2226}
-nav.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;height:70px;padding-bottom:env(safe-area-inset-bottom);display:flex;justify-content:space-around;z-index:10}nav.bottom button{border:0;background:#fff;color:#5E6B75;font-size:11px;min-width:54px}nav.bottom b{display:block;font-size:20px;margin-bottom:2px}.active{color:#0A66C2!important}.modal{display:none;position:fixed;inset:0;background:#0008;z-index:20;padding:15px;align-items:center;justify-content:center}.modal.show{display:flex}.modal{padding-top:max(15px,env(safe-area-inset-top));padding-bottom:max(15px,env(safe-area-inset-bottom))}.box{padding-top:max(18px,env(safe-area-inset-top))}.box{background:#fff;width:min(560px,100%);max-height:90vh;overflow:auto;border-radius:12px;padding:18px}.box textarea,.box input,.box select{width:100%;padding:11px;margin:6px 0 12px;border:1px solid #ddd;border-radius:7px}.primary{background:#0A66C2;color:#fff;border:0;border-radius:22px;padding:11px 18px;font-weight:bold}.close{float:right;border:0;background:#eee;border-radius:50%;width:32px;height:32px}
-@media(min-width:900px){.layout{display:grid;grid-template-columns:220px minmax(500px,680px) 240px;gap:12px;max-width:1200px;margin:auto}.side{display:block}.side .card{position:sticky;top:70px}}@media(max-width:899px){.side{display:none}.wrap{padding:10px 10px 18px}.market{margin-left:-2px;margin-right:-2px}.quick{gap:2px}.quick button{min-height:44px;padding:8px 4px}.actions button{min-height:44px;flex:1}.bottom button{min-height:58px}.search{min-width:0}.logo{font-size:22px}header{gap:8px;padding-left:max(10px,env(safe-area-inset-left));padding-right:max(10px,env(safe-area-inset-right))}.primary{white-space:nowrap}.media{max-height:62vh;object-fit:cover}}
-</style></head><body>
-<header><div class="logo">Constryn</div><input class="search" placeholder="Search people, projects, products..."><button class="primary" onclick="openCreate()">Create</button></header>
-<div class="layout"><aside class="side"><div class="card"><b>Constryn</b><p class="muted">Build • Create • Sell • Connect</p><hr><p>🏠 Home</p><p>🔍 Discover</p><p>👷 Professionals</p><p>💼 Jobs</p><p>🔔 Notifications</p></div></aside>
-<main class="wrap">
-<div class="card"><div class="create"><div class="avatar">CJ</div><input placeholder="Share a project, product or idea..." onclick="openCreate()" readonly></div><div class="quick"><button onclick="openCreate('photo')">📸 Photo</button><button onclick="openCreate('video')">🎥 Video</button><button onclick="openCreate('project')">🏗️ Project</button><button onclick="openCreate('sell')">🛒 Sell</button></div></div>
-<section id="feed"></section>
-<h2>Marketplace</h2><div class="card market">
-<div class="item"><img src="https://images.unsplash.com/photo-1503387762-592deb58ef4e?auto=format&fit=crop&w=500&q=80"><div><b>Construction equipment</b><br><span class="price">₦450,000</span></div></div>
-<div class="item"><img src="https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=500&q=80"><div><b>Technology equipment</b><br><span class="price">₦120,000</span></div></div>
-<div class="item"><img src="https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=500&q=80"><div><b>Engineering service</b><br><span class="price">Contact seller</span></div></div>
-</div></main>
-<aside class="side"><div class="card"><b>Trending on Constryn</b><p class="muted">#BuildingProjects</p><p class="muted">#Engineering</p><p class="muted">#Marketplace</p><p class="muted">#Technology</p></div></aside></div>
-<nav class="bottom"><button class="active"><b>⌂</b>Home</button><button><b>⌕</b>Discover</button><button onclick="openCreate()"><b>＋</b>Create</button><button><b>🛒</b>Market</button><button><b>💬</b>Messages</button><button><b>●</b>Profile</button></nav>
-<div class="modal" id="modal"><div class="box"><button class="close" onclick="closeCreate()">×</button><h2>Create on Constryn</h2><select id="type"><option value="Post">Regular post</option><option value="Project">Building/engineering project</option><option value="Product for sale">Product for sale</option><option value="Service">Offer a service</option><option value="Job">Post a job</option></select><textarea id="caption" rows="5" placeholder="What do you want to share?"></textarea><input id="media" type="file" accept="image/*,video/*" multiple><input id="price" placeholder="Price (optional)"><button class="primary" onclick="publish()">Publish</button></div></div>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Constryn</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:system-ui,Arial,sans-serif;background:#F3F2EF;color:#1D2226;padding-bottom:70px}
+    header{background:#fff;padding:10px 14px;display:flex;align-items:center;gap:10px;border-bottom:1px solid #ddd;position:sticky;top:0;z-index:20}
+    .logo{font-weight:900;font-size:22px;color:#0A66C2}
+    .search{flex:1;background:#EEF3F8;border:none;border-radius:8px;padding:10px 12px;font-size:14px}
+    .btn{background:#0A66C2;color:#fff;border:none;padding:9px 16px;border-radius:20px;font-weight:600;font-size:14px;cursor:pointer}
+    .btn-outline{background:transparent;border:1px solid #0A66C2;color:#0A66C2}
+    .container{max-width:680px;margin:0 auto;padding:12px}
+    .card{background:#fff;border-radius:10px;padding:14px;margin-bottom:12px;border:1px solid #E0DFDC}
+    .post-header{display:flex;gap:10px;margin-bottom:8px}
+    .avatar{width:42px;height:42px;border-radius:50%;background:#DCE6F1;display:flex;align-items:center;justify-content:center;font-weight:bold;color:#0A66C2}
+    .muted{color:#666;font-size:13px}
+    nav.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #ddd;display:flex;justify-content:space-around;padding:8px 0;z-index:30}
+    nav.bottom button{background:none;border:none;font-size:11px;color:#666;display:flex;flex-direction:column;align-items:center;gap:2px;min-width:60px}
+    nav.bottom button.active{color:#0A66C2;font-weight:600}
+    .section{display:none}
+    .section.active{display:block}
+    input,textarea,select{width:100%;padding:11px;margin:8px 0;border:1px solid #ccc;border-radius:8px;font-size:15px}
+    .auth-box{max-width:380px;margin:30px auto;background:#fff;padding:24px;border-radius:12px}
+    .error{color:#c00;font-size:14px;margin-bottom:10px}
+    .hidden{display:none}
+    .media-preview{max-width:100%;max-height:220px;border-radius:8px;margin-top:8px}
+    .pending-item{border:1px solid #eee;padding:12px;margin-bottom:10px;border-radius:8px}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Constryn</div>
+  <input class="search" placeholder="Search..." />
+  <div id="header-right"></div>
+</header>
+
+<div class="container">
+
+  <!-- AUTH -->
+  <div id="auth-section" class="auth-box">
+    <h2 id="auth-title">Login</h2>
+    <div id="auth-error" class="error"></div>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <input type="text" id="fullname" placeholder="Full Name (for signup)" class="hidden" />
+    <button class="btn" style="width:100%;margin-top:8px" onclick="handleAuth()">Continue</button>
+    <p style="text-align:center;margin-top:16px;font-size:14px">
+      <a href="#" onclick="toggleAuth()" id="toggle-link">Need an account? Sign up</a>
+    </p>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" class="hidden">
+
+    <!-- HOME -->
+    <div id="home" class="section active">
+      <div class="card">
+        <h3>Create Post</h3>
+        <select id="post-type">
+          <option value="Post">Regular Post</option>
+          <option value="Project">Building/Engineering Project</option>
+          <option value="Product for sale">Product for sale</option>
+          <option value="Service">Offer a service</option>
+          <option value="Job">Post a Job</option>
+        </select>
+        <textarea id="content" rows="3" placeholder="What do you want to share?"></textarea>
+        <input id="price" placeholder="Price (optional)" />
+        <input type="file" id="media-file" accept="image/*,video/*" />
+        <img id="preview" class="media-preview hidden" />
+        <video id="video-preview" class="media-preview hidden" controls></video>
+        <button class="btn" style="margin-top:10px" onclick="createPost()">Publish</button>
+      </div>
+
+      <div id="admin-panel" class="card hidden">
+        <h3>Admin – Pending Posts</h3>
+        <div id="pending-list"></div>
+      </div>
+
+      <h3 style="margin:16px 0 10px">Feed</h3>
+      <div id="feed"></div>
+    </div>
+
+    <!-- DISCOVER -->
+    <div id="discover" class="section">
+      <h2>Discover</h2>
+      <div class="card"><strong>Trending</strong><p class="muted" style="margin-top:8px">Coming soon</p></div>
+    </div>
+
+    <!-- MARKET -->
+    <div id="market" class="section">
+      <h2>Marketplace</h2>
+      <div class="card"><p class="muted">Products will appear here after approval.</p></div>
+    </div>
+
+    <!-- MESSAGES -->
+    <div id="messages" class="section">
+      <h2>Messages</h2>
+      <div id="messages-list" class="card">
+        <p class="muted">Your conversations will appear here.</p>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div id="profile" class="section">
+      <div class="card" style="text-align:center;padding:24px">
+        <div class="avatar" style="width:70px;height:70px;font-size:24px;margin:0 auto 12px" id="profile-avatar">U</div>
+        <h2 id="profile-name">User</h2>
+        <p class="muted" id="profile-email"></p>
+        <button class="btn btn-outline" style="margin-top:12px" onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<nav class="bottom hidden" id="bottom-nav">
+  <button class="active" onclick="showSection('home', this)"><span>🏠</span>Home</button>
+  <button onclick="showSection('discover', this)"><span>🔍</span>Discover</button>
+  <button onclick="showSection('market', this)"><span>🛒</span>Market</button>
+  <button onclick="showSection('messages', this)"><span>💬</span>Messages</button>
+  <button onclick="showSection('profile', this)"><span>👤</span>Profile</button>
+</nav>
+
 <script>
-const posts=[{name:'Johnmark Construction',type:'🏗️ Project update',text:'We are making progress on this residential building project. Follow our page for more updates and completed projects.',img:'https://images.unsplash.com/photo-1541888946425-d81bb19240f5?auto=format&fit=crop&w=900&q=80'},{name:'Grace Engineering',type:'⚙️ Engineering service',text:'We provide electrical installation and engineering services. Contact us directly for your next project.',img:'https://images.unsplash.com/photo-1581094794329-c8112a89af12?auto=format&fit=crop&w=900&q=80'}];
-function render(){feed.innerHTML=posts.map((p,i)=>`<article class="card post"><div class="posthead"><div class="avatar">${p.name.split(' ').map(x=>x[0]).join('').slice(0,2)}</div><div><h3>${p.name}</h3><div class="muted">${p.type} • Just now</div></div></div><p>${p.text}</p>${p.img?`<img class="media" src="${p.img}">`:''}<div class="actions"><button onclick="alert('Liked!')">👍 Like</button><button>💬 Comment</button><button>↗ Share</button><button onclick="alert('Opening contact options')">📩 Contact</button></div></article>`).join('')}
-function openCreate(t){modal.classList.add('show');if(t){type.value=t==='sell'?'Product for sale':t==='project'?'Project':'Post'}}function closeCreate(){modal.classList.remove('show')}
-function publish(){let text=caption.value.trim();if(!text){alert('Write something to publish.');return}let file=media.files[0];if(file&&file.type.startsWith('image/')){let r=new FileReader();r.onload=()=>{posts.unshift({name:'Constryn User',type:type.value,text, img:r.result});render();closeCreate()};r.readAsDataURL(file)}else{posts.unshift({name:'Constryn User',type:type.value,text:text+(price.value?' • '+price.value:''),img:null});render();closeCreate()}caption.value='';price.value=''}
-render();
-</script></body></html>
+  const SUPABASE_URL = 'https://ctdjhtwntccrsophqqjn.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0ZGpodHdudGNjcnNvcGhxcWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5OTQ0MTAsImV4cCI6MjEwNDU3MDQxMH0.8FbSAF9PABUaR_uMaNFA3W3cHkp1YoQ6x1jF0bmseNM';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let currentUser = null;
+  let isLogin = true;
+  let isAdmin = false;
+  let selectedFile = null;
+
+  document.getElementById('media-file').addEventListener('change', function(e) {
+    selectedFile = e.target.files[0];
+    const preview = document.getElementById('preview');
+    const videoPreview = document.getElementById('video-preview');
+    preview.classList.add('hidden');
+    videoPreview.classList.add('hidden');
+
+    if (!selectedFile) return;
+
+    if (selectedFile.type.startsWith('image/')) {
+      preview.src = URL.createObjectURL(selectedFile);
+      preview.classList.remove('hidden');
+    } else if (selectedFile.type.startsWith('video/')) {
+      videoPreview.src = URL.createObjectURL(selectedFile);
+      videoPreview.classList.remove('hidden');
+    }
+  });
+
+  async function init() {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      await ensureProfile();
+      showApp();
+    }
+  }
+
+  async function ensureProfile() {
+    const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    if (!data) {
+      await supabase.from('profiles').insert({
+        id: currentUser.id,
+        full_name: currentUser.user_metadata?.full_name || currentUser.email
+      });
+    } else {
+      isAdmin = data.is_admin === true;
+    }
+  }
+
+  function toggleAuth() {
+    isLogin = !isLogin;
+    document.getElementById('auth-title').textContent = isLogin ? 'Login' : 'Sign Up';
+    document.getElementById('fullname').classList.toggle('hidden', isLogin);
+    document.getElementById('toggle-link').textContent = isLogin ? 'Need an account? Sign up' : 'Already have an account? Login';
+    document.getElementById('auth-error').textContent = '';
+  }
+
+  async function handleAuth() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const fullName = document.getElementById('fullname').value.trim();
+    const errorEl = document.getElementById('auth-error');
+    errorEl.textContent = '';
+
+    if (!email || !password) {
+      errorEl.textContent = 'Please fill email and password';
+      return;
+    }
+
+    if (isLogin) {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) { errorEl.textContent = error.message; return; }
+      currentUser = data.user;
+    } else {
+      if (!fullName) { errorEl.textContent = 'Please enter your full name'; return; }
+      const { data, error } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { full_name: fullName } }
+      });
+      if (error) { errorEl.textContent = error.message; return; }
+      alert('Account created! Please login.');
+      isLogin = true;
+      toggleAuth();
+      return;
+    }
+
+    await ensureProfile();
+    showApp();
+  }
+
+  async function showApp() {
+    document.getElementById('auth-section').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('bottom-nav').classList.remove('hidden');
+
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    isAdmin = profile?.is_admin === true;
+
+    document.getElementById('header-right').innerHTML = `
+      <span style="font-size:13px;margin-right:8px">${profile?.full_name || 'User'}</span>
+      <button class="btn btn-outline" onclick="logout()">Logout</button>
+    `;
+
+    document.getElementById('profile-name').textContent = profile?.full_name || 'User';
+    document.getElementById('profile-email').textContent = currentUser.email;
+    document.getElementById('profile-avatar').textContent = (profile?.full_name || 'U').charAt(0);
+
+    if (isAdmin) {
+      document.getElementById('admin-panel').classList.remove('hidden');
+      loadPending();
+    }
+
+    loadFeed();
+  }
+
+  async function createPost() {
+    const content = document.getElementById('content').value.trim();
+    const post_type = document.getElementById('post-type').value;
+    const price = document.getElementById('price').value.trim();
+
+    if (!content) { alert('Write something'); return; }
+
+    let mediaUrl = null;
+
+    if (selectedFile) {
+      const fileName = Date.now() + '_' + selectedFile.name;
+      const { data, error } = await supabase.storage
+        .from('media')
+        .upload(fileName, selectedFile);
+
+      if (error) {
+        alert('Upload failed: ' + error.message);
+        return;
+      }
+
+      const { data: publicUrl } = supabase.storage.from('media').getPublicUrl(fileName);
+      mediaUrl = publicUrl.publicUrl;
+    }
+
+    const { error } = await supabase.from('posts').insert({
+      user_id: currentUser.id,
+      content,
+      post_type,
+      price: price || null,
+      image_url: mediaUrl,
+      status: 'pending'
+    });
+
+    if (error) { alert(error.message); return; }
+
+    document.getElementById('content').value = '';
+    document.getElementById('price').value = '';
+    document.getElementById('media-file').value = '';
+    document.getElementById('preview').classList.add('hidden');
+    document.getElementById('video-preview').classList.add('hidden');
+    selectedFile = null;
+
+    alert('Post submitted! Waiting for admin approval.');
+    loadFeed();
+    if (isAdmin) loadPending();
+  }
+
+  async function loadFeed() {
+    const { data: posts } = await supabase
+      .from('posts')
+      .select('*, profiles(full_name)')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
+
+    const feed = document.getElementById('feed');
+    if (!posts || posts.length === 0) {
+      feed.innerHTML = '<p class="muted">No posts yet.</p>';
+      return;
+    }
+
+    feed.innerHTML = posts.map(p => `
+      <div class="card">
+        <div class="post-header">
+          <div class="avatar">${(p.profiles?.full_name || 'U').charAt(0)}</div>
+          <div>
+            <strong>${p.profiles?.full_name || 'User'}</strong>
+            <div class="muted">${p.post_type} • ${new Date(p.created_at).toLocaleDateString()}</div>
+          </div>
+        </div>
+        <p>${p.content}</p>
+        \( {p.price ? `<p><strong> \){p.price}</strong></p>` : ''}
+        ${p.image_url ? (
+          p.image_url.match(/\.(mp4|webm|ogg)$/i) 
+            ? `<video src="${p.image_url}" controls style="width:100%;border-radius:8px;margin-top:8px"></video>`
+            : `<img src="${p.image_url}" style="width:100%;border-radius:8px;margin-top:8px" />`
+        ) : ''}
+        <button class="btn btn-outline" style="margin-top:10px;padding:6px 12px;font-size:13px" onclick="startChat('\( {p.user_id}', ' \){p.profiles?.full_name || 'User'}')">Message</button>
+      </div>
+    `).join('');
+  }
+
+  async function loadPending() {
+    const { data: posts } = await supabase
+      .from('posts')
+      .select('*, profiles(full_name)')
+      .eq('status', 'pending')
+      .order('created_at', { ascending: false });
+
+    const list = document.getElementById('pending-list');
+    if (!posts || posts.length === 0) {
+      list.innerHTML = '<p class="muted">No pending posts</p>';
+      return;
+    }
+
+    list.innerHTML = posts.map(p => `
+      <div class="pending-item">
+        <div class="muted">${p.profiles?.full_name} • ${p.post_type}</div>
+        <p>${p.content}</p>
+        <div style="margin-top:8px;display:flex;gap:8px">
+          <button class="btn" style="padding:6px 12px;font-size:13px" onclick="updateStatus('${p.id}','approved')">Approve</button>
+          <button class="btn btn-outline" style="padding:6px 12px;font-size:13px" onclick="updateStatus('${p.id}','rejected')">Reject</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  async function updateStatus(id, status) {
+    await supabase.from('posts').update({ status }).eq('id', id);
+    loadPending();
+    loadFeed();
+  }
+
+  function startChat(receiverId, name) {
+    alert('Messaging with ' + name + ' will open here. Full chat UI coming in the next update.');
+  }
+
+  function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(el => el.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav.bottom button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+    window.scrollTo(0,0);
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    location.reload();
+  }
+
+  init();
+</script>
+</body>
+</html>
