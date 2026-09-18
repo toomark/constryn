@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Constryn</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:#fafafa;color:#262626;padding-bottom:60px}
+    
+    /* Top bar - Instagram style */
+    header{background:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #dbdbdb;position:sticky;top:0;z-index:20}
+    .logo{font-family:"Billabong",cursive;font-size:28px;font-weight:400;color:#262626;letter-spacing:1px}
+    .header-icons{display:flex;gap:18px;align-items:center}
+    .header-icons span{font-size:24px;cursor:pointer}
+    
+    /* Stories */
+    .stories{background:#fff;padding:12px 0 8px;border-bottom:1px solid #dbdbdb;overflow-x:auto;white-space:nowrap;display:flex;gap:14px;padding-left:12px}
+    .story{display:inline-flex;flex-direction:column;align-items:center;width:70px}
+    .story-ring{width:66px;height:66px;border-radius:50%;background:linear-gradient(45deg,#f09433,#e6683c,#dc2743,#cc2366,#bc1888);padding:3px;margin-bottom:4px}
+    .story-ring img,.story-ring div{width:100%;height:100%;border-radius:50%;border:2px solid #fff;object-fit:cover;background:#efefef;display:flex;align-items:center;justify-content:center;font-weight:600;color:#262626}
+    .story span{font-size:12px;max-width:70px;overflow:hidden;text-overflow:ellipsis}
+    
+    /* Feed */
+    .feed{max-width:470px;margin:0 auto}
+    .post{background:#fff;border:1px solid #dbdbdb;margin-bottom:16px;border-radius:0}
+    .post-header{display:flex;align-items:center;padding:12px 14px;gap:10px}
+    .post-avatar{width:36px;height:36px;border-radius:50%;background:#efefef;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:14px}
+    .post-user{font-weight:600;font-size:14px}
+    .post-media{width:100%;aspect-ratio:1/1;background:#efefef;object-fit:cover;display:block}
+    .post-actions{padding:10px 14px;display:flex;gap:16px;font-size:24px}
+    .post-likes{padding:0 14px 6px;font-weight:600;font-size:14px}
+    .post-caption{padding:0 14px 12px;font-size:14px;line-height:1.4}
+    .post-caption strong{font-weight:600}
+    .post-time{padding:0 14px 14px;font-size:11px;color:#8e8e8e;text-transform:uppercase}
+    
+    /* Create button overlay */
+    .create-btn{position:fixed;bottom:80px;right:20px;width:56px;height:56px;border-radius:50%;background:#0095f6;color:#fff;border:none;font-size:28px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,0.2);z-index:40;cursor:pointer}
+    
+    /* Bottom nav - Instagram style */
+    nav.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid #dbdbdb;display:flex;justify-content:space-around;padding:10px 0 6px;z-index:30}
+    nav.bottom button{background:none;border:none;font-size:26px;color:#262626;display:flex;flex-direction:column;align-items:center}
+    
+    /* Auth modal */
+    .auth-box{max-width:350px;margin:40px auto;background:#fff;padding:28px;border:1px solid #dbdbdb;border-radius:8px;text-align:center}
+    .auth-box h2{font-size:22px;margin-bottom:18px}
+    input,textarea,select{width:100%;padding:12px;margin:8px 0;border:1px solid #dbdbdb;border-radius:6px;font-size:14px;background:#fafafa}
+    .btn{background:#0095f6;color:#fff;border:none;padding:10px;border-radius:8px;font-weight:600;font-size:14px;cursor:pointer;width:100%;margin-top:10px}
+    .btn-outline{background:transparent;border:1px solid #dbdbdb;color:#262626}
+    .error{color:#ed4956;font-size:13px;margin-bottom:8px}
+    .hidden{display:none}
+    
+    .section{display:none}
+    .section.active{display:block}
+    
+    /* Profile grid */
+    .profile-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2px}
+    .profile-grid img{width:100%;aspect-ratio:1/1;object-fit:cover}
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">Constryn</div>
+  <div class="header-icons" id="header-right">
+    <span onclick="showLogin()">➕</span>
+    <span>💬</span>
+    <span onclick="showLogin()">♡</span>
+  </div>
+</header>
+
+<!-- Stories row -->
+<div class="stories" id="stories">
+  <div class="story">
+    <div class="story-ring"><div>+</div></div>
+    <span>Your story</span>
+  </div>
+  <div class="story">
+    <div class="story-ring"><div>J</div></div>
+    <span>john_builds</span>
+  </div>
+  <div class="story">
+    <div class="story-ring"><div>M</div></div>
+    <span>maria_pro</span>
+  </div>
+  <div class="story">
+    <div class="story-ring"><div>K</div></div>
+    <span>kofi_steel</span>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- Auth (hidden by default) -->
+  <div id="auth-section" class="auth-box hidden">
+    <h2 id="auth-title">Login</h2>
+    <div id="auth-error" class="error"></div>
+    <input type="email" id="email" placeholder="Email" />
+    <input type="password" id="password" placeholder="Password" />
+    <input type="text" id="fullname" placeholder="Full Name" class="hidden" />
+    <button class="btn" onclick="handleAuth()">Continue</button>
+    <p style="margin-top:16px;font-size:14px">
+      <a href="#" onclick="toggleAuth()" id="toggle-link" style="color:#0095f6">Need an account? Sign up</a>
+    </p>
+    <p style="margin-top:12px">
+      <a href="#" onclick="hideLogin()" style="font-size:13px;color:#8e8e8e">← Back to feed</a>
+    </p>
+  </div>
+
+  <!-- Main app (visible by default) -->
+  <div id="app">
+    <div id="home" class="section active">
+      <div class="feed" id="feed"></div>
+    </div>
+
+    <div id="discover" class="section">
+      <div style="padding:20px;text-align:center;color:#8e8e8e">Search & Discover coming soon</div>
+    </div>
+
+    <div id="market" class="section">
+      <div style="padding:20px;text-align:center;color:#8e8e8e">Marketplace coming soon</div>
+    </div>
+
+    <div id="messages" class="section">
+      <div style="padding:20px;text-align:center;color:#8e8e8e">Messages</div>
+    </div>
+
+    <div id="profile" class="section">
+      <div style="padding:20px;text-align:center">
+        <div class="post-avatar" style="width:90px;height:90px;font-size:32px;margin:0 auto 12px" id="profile-avatar">U</div>
+        <h2 id="profile-name" style="font-size:20px">User</h2>
+        <p class="muted" id="profile-email" style="color:#8e8e8e;margin:6px 0 16px"></p>
+        <button class="btn btn-outline" style="width:auto;padding:8px 24px" onclick="logout()">Log out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Floating create button -->
+<button class="create-btn" onclick="showLogin()">＋</button>
+
+<nav class="bottom" id="bottom-nav">
+  <button class="active" onclick="showSection('home', this)">🏠</button>
+  <button onclick="showSection('discover', this)">🔍</button>
+  <button onclick="showLogin()">➕</button>
+  <button onclick="showSection('market', this)">🛒</button>
+  <button onclick="showSection('profile', this)">👤</button>
+</nav>
+
+<script>
+  const SUPABASE_URL = 'https://ctdjhtwntccrsophqqjn.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN0ZGpodHdudGNjcnNvcGhxcWpuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg5OTQ0MTAsImV4cCI6MjEwNDU3MDQxMH0.8FbSAF9PABUaR_uMaNFA3W3cHkp1YoQ6x1jF0bmseNM';
+  const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let currentUser = null;
+  let isLogin = true;
+  let isAdmin = false;
+  let selectedFile = null;
+
+  async function init() {
+    loadFeed();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+      currentUser = session.user;
+      await ensureProfile();
+      showApp();
+    }
+  }
+
+  function showLogin() {
+    document.getElementById('auth-section').classList.remove('hidden');
+    document.getElementById('app').classList.add('hidden');
+    document.getElementById('bottom-nav').classList.add('hidden');
+    document.querySelector('.create-btn').classList.add('hidden');
+    document.querySelector('.stories').classList.add('hidden');
+  }
+
+  function hideLogin() {
+    document.getElementById('auth-section').classList.add('hidden');
+    document.getElementById('app').classList.remove('hidden');
+    document.getElementById('bottom-nav').classList.remove('hidden');
+    document.querySelector('.create-btn').classList.remove('hidden');
+    document.querySelector('.stories').classList.remove('hidden');
+  }
+
+  async function ensureProfile() {
+    const { data } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    if (!data) {
+      await supabase.from('profiles').insert({
+        id: currentUser.id,
+        full_name: currentUser.user_metadata?.full_name || currentUser.email
+      });
+    } else {
+      isAdmin = data.is_admin === true;
+    }
+  }
+
+  function toggleAuth() {
+    isLogin = !isLogin;
+    document.getElementById('auth-title').textContent = isLogin ? 'Login' : 'Sign Up';
+    document.getElementById('fullname').classList.toggle('hidden', isLogin);
+    document.getElementById('toggle-link').textContent = isLogin ? 'Need an account? Sign up' : 'Already have an account? Login';
+    document.getElementById('auth-error').textContent = '';
+  }
+
+  async function handleAuth() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const fullName = document.getElementById('fullname').value.trim();
+    const errorEl = document.getElementById('auth-error');
+    errorEl.textContent = '';
+
+    if (!email || !password) {
+      errorEl.textContent = 'Please fill email and password';
+      return;
+    }
+
+    if (isLogin) {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) { errorEl.textContent = error.message; return; }
+      currentUser = data.user;
+    } else {
+      if (!fullName) { errorEl.textContent = 'Please enter your full name'; return; }
+      const { data, error } = await supabase.auth.signUp({
+        email, password,
+        options: { data: { full_name: fullName } }
+      });
+      if (error) { errorEl.textContent = error.message; return; }
+      alert('Account created! Check your email then login.');
+      isLogin = true;
+      toggleAuth();
+      return;
+    }
+
+    await ensureProfile();
+    showApp();
+  }
+
+  async function showApp() {
+    hideLogin();
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+    isAdmin = profile?.is_admin === true;
+
+    document.getElementById('header-right').innerHTML = `
+      <span>➕</span>
+      <span>💬</span>
+      <span>♡</span>
+    `;
+
+    document.getElementById('profile-name').textContent = profile?.full_name || 'User';
+    document.getElementById('profile-email').textContent = currentUser.email;
+    document.getElementById('profile-avatar').textContent = (profile?.full_name || 'U').charAt(0).toUpperCase();
+
+    loadFeed();
+  }
+
+  function showSection(id, btn) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.querySelectorAll('nav.bottom button').forEach(b => b.classList.remove('active'));
+    if (btn) btn.classList.add('active');
+  }
+
+  async function loadFeed() {
+    const { data: posts, error } = await supabase
+      .from('posts')
+      .select('*, profiles(full_name)')
+      .eq('status', 'approved')
+      .order('created_at', { ascending: false });
+
+    const feed = document.getElementById('feed');
+    feed.innerHTML = '';
+
+    if (error || !posts || posts.length === 0) {
+      feed.innerHTML = `
+        <div class="post" style="padding:40px;text-align:center;color:#8e8e8e">
+          No posts yet.<br>Be the first to share a project.
+        </div>`;
+      return;
+    }
+
+    posts.forEach(post => {
+      const name = post.profiles?.full_name || 'User';
+      const initial = name.charAt(0).toUpperCase();
+      const media = post.media_url 
+        ? (post.media_url.includes('video') || post.media_url.endsWith('.mp4')
+            ? `<video class="post-media" src="${post.media_url}" controls></video>`
+            : `<img class="post-media" src="${post.media_url}">`)
+        : `<div class="post-media" style="display:flex;align-items:center;justify-content:center;color:#8e8e8e;font-size:14px">${post.type}</div>`;
+
+      feed.innerHTML += `
+        <div class="post">
+          <div class="post-header">
+            <div class="post-avatar">${initial}</div>
+            <div class="post-user">${name}</div>
+          </div>
+          ${media}
+          <div class="post-actions">
+            <span>♡</span>
+            <span>💬</span>
+            <span>➤</span>
+          </div>
+          <div class="post-likes">128 likes</div>
+          <div class="post-caption"><strong>${name}</strong> ${post.content}</div>
+          \( {post.price ? `<div class="post-caption" style="color:#0095f6;font-weight:600"> \){post.price}</div>` : ''}
+          <div class="post-time">${new Date(post.created_at).toLocaleDateString()}</div>
+        </div>
+      `;
+    });
+  }
+
+  async function logout() {
+    await supabase.auth.signOut();
+    location.reload();
+  }
+
+  init();
+</script>
+</body>
+</html>
